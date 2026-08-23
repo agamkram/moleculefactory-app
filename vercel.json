@@ -1,5 +1,7 @@
 {
   "framework": null,
+  "installCommand": null,
+  "buildCommand": null,
   "headers": [
     {
       "source": "/(.*)\\.(jpg|jpeg|webp|gif|woff2?)",

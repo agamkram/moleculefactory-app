@@ -14,7 +14,7 @@ Static HTML/JS PWA · Three.js (vendored) · no build step
 ## Local
 
 ```bash
-npm test
+node test-build.mjs
 ```
 
 Open `index.html` over HTTPS or localhost (or use the existing local serve script when you want a phone preview).
