@@ -27,7 +27,7 @@ export const LORE = {
   "structured_water": {
     discovered: "marketing dept.",
     place: "Wellness aisle",
-    hook: "Sold as H₃O₂ — an extra H and O that chemistry does not stock. Still just water with a story.",
+    hook: "A hexagon of ordinary waters, sold under the fake formula H₃O₂ — pretty ring, nonsense math.",
   },
   "co2": {
     discovered: "1754",
