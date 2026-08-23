@@ -24,6 +24,11 @@ export const LORE = {
     place: "England / France",
     hook: "Two hydrogens, one oxygen: the bent molecule that makes Earth a living world.",
   },
+  "structured_water": {
+    discovered: "marketing dept.",
+    place: "Wellness aisle",
+    hook: "Six ordinary waters in a pretty ring — same H₂O, extra price tag, zero miracle.",
+  },
   "co2": {
     discovered: "1754",
     place: "Scotland",
