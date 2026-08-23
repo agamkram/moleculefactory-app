@@ -864,16 +864,20 @@ function makeElementCell(sym) {
   btn.type = "button";
   btn.className = "el-cell";
   btn.dataset.sym = sym;
-  btn.title = `${info.name} (${sym}) · Z ${info.z}`;
+  const state = info.state || "solid";
+  btn.title = `${info.name} (${sym}) · Z ${info.z} · ${state}`;
   btn.setAttribute(
     "aria-label",
-    `${info.name}, ${sym}, atomic number ${info.z}`
+    `${info.name}, ${sym}, atomic number ${info.z}, ${state}`
   );
   const ink = inkFor(info.color);
   btn.style.backgroundColor = info.color;
   btn.style.color = ink;
   btn.innerHTML =
+    `<span class="el-top">` +
     `<span class="el-z">${info.z}</span>` +
+    `<span class="el-state">${state}</span>` +
+    `</span>` +
     `<span class="el-sym">${sym}</span>` +
     `<span class="el-name">${info.name}</span>`;
   btn.addEventListener("click", (e) => {

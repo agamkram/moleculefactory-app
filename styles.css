@@ -490,15 +490,38 @@ body {
   filter: brightness(1.12);
 }
 
+.el-cell .el-top {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.08rem;
+  line-height: 1.05;
+}
+
 .el-cell .el-z {
-  justify-self: start;
-  font-size: 0.5412rem;
+  font-size: 0.62rem;
   font-weight: 600;
   opacity: 0.85;
+  flex: 0 0 auto;
+}
+
+.el-cell .el-state {
+  font-size: 0.34rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: lowercase;
+  opacity: 0.88;
+  text-align: right;
+  max-width: 58%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 0 1 auto;
 }
 
 .el-cell .el-sym {
-  font-size: 1.0049rem;
+  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
@@ -526,13 +549,16 @@ body.rail-open {
     --rail-h: calc(var(--cell) + 0.4rem);
   }
   .el-cell .el-sym {
-    font-size: 1.1597rem;
+    font-size: 1.33rem;
   }
   .el-cell .el-name {
     font-size: 0.4637rem;
   }
   .el-cell .el-z {
-    font-size: 0.5797rem;
+    font-size: 0.7rem;
+  }
+  .el-cell .el-state {
+    font-size: 0.38rem;
   }
 }
 
