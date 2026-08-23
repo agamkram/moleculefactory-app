@@ -36,6 +36,7 @@ const sheetAbout = document.getElementById("sheet-about");
 const btnRecipes = document.getElementById("btn-recipes");
 const btnAbout = document.getElementById("btn-about");
 const btnClear = document.getElementById("btn-clear");
+const btnRotate = document.getElementById("btn-rotate");
 
 /** @type {string | null} */
 let pendingEl = null;
@@ -202,6 +203,7 @@ function spinByDrag(dx, dy) {
 
 function setAutoSpin(on) {
   autoSpin = !!on;
+  btnRotate?.setAttribute("aria-pressed", autoSpin ? "true" : "false");
 }
 
 /**
@@ -293,33 +295,58 @@ function resetBuildCamera() {
 }
 
 /**
- * Fit a sphere of `radius` at `_fitCenter` into the clear stage band —
- * fills available space with margin, centered in that band (not canvas center).
+ * Fit the molecule AABB into the clear stage band — one rule for every shape.
+ * Uses extents projected onto the view (not a sphere from the long axis), so
+ * flat outliers like cholesterol fill the frame instead of looking tiny.
  */
 function applyFrameFromSize(radius) {
-  const r = Math.max(radius, 0.7);
   const inset = getStageInsets();
   const vFov = (camera.fov * Math.PI) / 180;
   const aspect = camera.aspect || inset.w / inset.h;
   const hFov = 2 * Math.atan(Math.tan(vFov / 2) * aspect);
 
-  // Fit sphere in the usable width & height (with padding).
-  // Larger molecules get a bit more margin so library giants land fully in frame.
-  const pad = r > 8 ? 1.55 : r > 4 ? 1.42 : 1.32;
-  const distH = (r * pad) / Math.tan(vFov / 2) / (inset.availH / inset.h);
-  const distW = (r * pad) / Math.tan(hFov / 2) / (inset.availW / inset.w);
-  let dist = Math.max(distH, distW);
-  dist = Math.min(controls.maxDistance * 0.98, Math.max(controls.minDistance + 0.6, dist));
-
-  // Keep a pleasant viewing direction.
+  // Pleasant viewing direction (same for all recipes).
   _fitDir.set(0.42, 0.22, 1).normalize();
   const center = _fitCenter.clone();
+
+  // Camera basis for projection (look along _fitDir, world up).
+  const forward = _fitDir.clone();
+  const worldUp = new THREE.Vector3(0, 1, 0);
+  const right = new THREE.Vector3().crossVectors(worldUp, forward).normalize();
+  if (right.lengthSq() < 1e-6) right.set(1, 0, 0);
+  const up = new THREE.Vector3().crossVectors(forward, right).normalize();
+
+  // Project AABB corners onto view right/up → half-width / half-height on screen.
+  const hx = Math.max(_fitSize.x * 0.5, 0.35);
+  const hy = Math.max(_fitSize.y * 0.5, 0.35);
+  const hz = Math.max(_fitSize.z * 0.5, 0.35);
+  let halfW = 0;
+  let halfH = 0;
+  for (const sx of [-hx, hx]) {
+    for (const sy of [-hy, hy]) {
+      for (const sz of [-hz, hz]) {
+        const ox = right.x * sx + right.y * sy + right.z * sz;
+        const oy = up.x * sx + up.y * sy + up.z * sz;
+        halfW = Math.max(halfW, Math.abs(ox));
+        halfH = Math.max(halfH, Math.abs(oy));
+      }
+    }
+  }
+  // Fallback for empty/odd bounds.
+  const rFallback = Math.max(radius, 0.7);
+  if (halfW < 1e-3) halfW = rFallback;
+  if (halfH < 1e-3) halfH = rFallback;
+
+  const pad = 1.22;
+  const distH = (halfH * pad) / Math.tan(vFov / 2) / (inset.availH / inset.h);
+  const distW = (halfW * pad) / Math.tan(hFov / 2) / (inset.availW / inset.w);
+  let dist = Math.max(distH, distW);
+  dist = Math.min(controls.maxDistance * 0.98, Math.max(controls.minDistance + 0.6, dist));
 
   // Shift look-at so the molecule sits on the clear-band center (above rail).
   const clearMidY = inset.top + inset.availH / 2;
   const canvasMidY = inset.h / 2;
   const ndcShift = ((canvasMidY - clearMidY) / (inset.h / 2)) * Math.tan(vFov / 2);
-  // Positive ndcShift (clear center above canvas mid) → look below molecule.
   const worldLift = ndcShift * dist;
   const target = center.clone();
   target.y -= worldLift;
@@ -371,7 +398,10 @@ function frameMoleculeFromGraph(g, { includeSites = false } = {}) {
   }
   _fitCenter.set((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2);
   _fitSize.set(maxX - minX, maxY - minY, maxZ - minZ);
-  applyFrameFromSize(Math.max(_fitSize.length() * 0.5, 0.7));
+  // Use half the longest AABB axis — not half-diagonal (diagonal over-zooms
+  // spheres/cubes like C60 so they look smaller than elongated DNA).
+  const fitR = 0.5 * Math.max(_fitSize.x, _fitSize.y, _fitSize.z, 1.4);
+  applyFrameFromSize(fitR);
 }
 
 /** Reframe from the live graph (+ ghosts). Safe while the molecule is spinning. */
@@ -458,16 +488,17 @@ function renderGraph({ animate = false } = {}) {
   const atoms = graph.atoms;
   const byId = new Map(atoms.map((a) => [a.id, a]));
 
-  const place = (i) => {
+  const place = (i, growMs) => {
     if (token !== buildToken) return;
     const mesh = atomMesh(atoms[i]);
     if (animate) {
       mesh.scale.setScalar(0.01);
       molGroup.add(mesh);
       const t0 = performance.now();
+      const dur = Math.max(40, growMs || 180);
       const grow = () => {
         if (token !== buildToken) return;
-        const u = Math.min(1, (performance.now() - t0) / 280);
+        const u = Math.min(1, (performance.now() - t0) / dur);
         mesh.scale.setScalar(1 - Math.pow(1 - u, 3));
         if (u < 1) requestAnimationFrame(grow);
       };
@@ -494,31 +525,39 @@ function renderGraph({ animate = false } = {}) {
     return;
   }
 
-  // Scale assemble speed so large recipes (caffeine…) finish in a few seconds.
-  const atomMs = Math.max(50, Math.min(200, 3200 / Math.max(atoms.length, 1)));
-  const bondMs = Math.max(35, Math.min(140, 2400 / Math.max(graph.bonds.length, 1)));
+  // One rule: keep total assemble time in a few seconds as size grows.
+  // Small molecules stay readable; DNA/C60 don't crawl for 15s+.
+  const nA = Math.max(atoms.length, 1);
+  const nB = Math.max(graph.bonds.length, 1);
+  const targetMs =
+    nA <= 12 ? 2000 : nA <= 30 ? 2600 : nA <= 80 ? 3200 : 3800;
+  const stepMs = Math.max(3, targetMs / (nA + nB));
+  const batch = nA >= 120 ? 4 : nA >= 60 ? 3 : nA >= 30 ? 2 : 1;
+  const growMs = nA >= 60 ? 70 : nA >= 30 ? 110 : 180;
 
-  let step = 0;
-  const run = () => {
+  let phase = 0; // atom index, then atoms.length + bond index
+  const tick = () => {
     if (token !== buildToken) return;
-    if (step < atoms.length) {
-      place(step);
-      step += 1;
-      setTimeout(run, atomMs);
+    if (phase < atoms.length) {
+      const end = Math.min(atoms.length, phase + batch);
+      for (let i = phase; i < end; i++) place(i, growMs);
+      phase = end;
+      setTimeout(tick, stepMs * Math.max(1, batch * 0.65));
       return;
     }
-    const bi = step - atoms.length;
+    const bi = phase - atoms.length;
     if (bi < graph.bonds.length) {
-      link(bi);
-      step += 1;
-      setTimeout(run, bondMs);
+      const end = Math.min(graph.bonds.length, bi + batch);
+      for (let i = bi; i < end; i++) link(i);
+      phase = atoms.length + end;
+      setTimeout(tick, stepMs * Math.max(1, batch * 0.5));
       return;
     }
     rebuildSites();
     // Recipe assemble already pre-framed — do not reframe (spin would look like a resize).
     cameraFrameLocked = false;
   };
-  run();
+  tick();
 }
 
 function rebuildSites() {
@@ -1136,6 +1175,10 @@ btnClear.addEventListener("click", () => {
   requestAnimationFrame(() => {
     centerRailOnMiddleCopy();
   });
+});
+
+btnRotate?.addEventListener("click", () => {
+  setAutoSpin(!autoSpin);
 });
 
 renderer.domElement.addEventListener("pointerdown", onStagePointerDown);

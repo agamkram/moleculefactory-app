@@ -136,6 +136,20 @@ html.pwa-standalone body {
   background: transparent;
 }
 
+.btn-rotate {
+  width: 2rem;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-rotate:active {
+  transform: scale(0.96);
+}
+
 .hud {
   position: absolute;
   left: calc(0.75rem + var(--safe-l));
