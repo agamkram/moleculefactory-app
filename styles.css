@@ -261,15 +261,15 @@ body {
   color: var(--text);
 }
 
-.teach-body {
+.learn-body {
   padding: 0.35rem 0.85rem calc(0.85rem + var(--safe-b));
 }
 
-.teach-section {
+.learn-section {
   margin: 0.85rem 0 1.1rem;
 }
 
-.teach-section h3 {
+.learn-section h3 {
   margin: 0 0 0.45rem;
   font-size: 0.72rem;
   font-weight: 700;
@@ -278,7 +278,7 @@ body {
   color: #ffb45c;
 }
 
-.teach-list {
+.learn-list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -286,7 +286,7 @@ body {
   gap: 0.55rem;
 }
 
-.teach-list li {
+.learn-list li {
   padding: 0.65rem 0.75rem;
   border-radius: 0.65rem;
   background: var(--surface-2);
@@ -296,7 +296,7 @@ body {
   line-height: 1.45;
 }
 
-.teach-list strong {
+.learn-list strong {
   color: var(--text);
   font-weight: 600;
 }
