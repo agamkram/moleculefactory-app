@@ -1078,7 +1078,33 @@ export const LORE = {
     discovered: "1958",
     place: "USA",
     hook: "The darkness hormone — rises at night and helps nudge you toward sleep.",
-  }
+  },
+  "cubane": {
+    discovered: "1964",
+    place: "USA",
+    hook: "A cube of carbon — impossibly strained, impossibly neat, and absolutely real.",
+  },
+  "c60": {
+    discovered: "1985",
+    place: "UK / USA",
+    hook: "Sixty carbons folded into a soccer ball — space chemistry that became a Nobel prize.",
+  },
+  "porphyrin": {
+    discovered: "19th–20th c.",
+    place: "Europe",
+    hook: "The flat ring at the heart of heme and chlorophyll — life’s favorite colorful scaffold.",
+  },
+  "cholesterol": {
+    discovered: "1815 era",
+    place: "France / Europe",
+    hook: "The steroid your membranes need — same family as hormones, famous in blood tests.",
+  },
+  "dna_4bp": {
+    discovered: "1953 structure",
+    place: "UK",
+    hook: "Four rungs of the double helix — a tiny readable scrap of the molecule that writes you.",
+  },
+
 };
 
 export function loreFor(recipe) {
