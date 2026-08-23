@@ -14,6 +14,8 @@
   --vv-left: 0px;
   --vv-w: 100%;
   --vv-h: 100%;
+  --pwa-fill-h: 100%;
+  --pwa-extra-b: 0px;
   /* Element tile size — on :root so tray/sheet --rail-h can see it */
   --cell: 3.4304rem; /* +20% from 2.8587 */
 }
@@ -37,13 +39,23 @@ body {
   touch-action: manipulation;
 }
 
-/* Pin shell to visual viewport (Safari) / PWA fill (HyperMiler pattern) */
+/* Bug B: PWA must grow layout viewport to screen fillH (in flow — not fixed html/body) */
+html.pwa-standalone,
+html.pwa-standalone body {
+  height: calc(var(--pwa-fill-h, 100%) + var(--pwa-extra-b, 0px));
+  min-height: calc(var(--pwa-fill-h, 100%) + var(--pwa-extra-b, 0px));
+  max-height: none;
+}
+
+/* Pin shell to visual viewport (Safari tab) / PWA fillH (HyperMiler pattern) */
 #app {
   position: fixed;
   top: var(--vv-top);
   left: var(--vv-left);
   width: var(--vv-w);
   height: var(--vv-h);
+  right: auto;
+  bottom: auto;
   overflow: hidden;
   background: var(--bg);
 }

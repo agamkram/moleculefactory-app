@@ -117,6 +117,28 @@ const _fitSize = new THREE.Vector3();
 const _fitCenter = new THREE.Vector3();
 const _fitDir = new THREE.Vector3();
 
+function pwaFillHeightPx() {
+  const iw = window.innerWidth || 0;
+  const ih = window.innerHeight || 0;
+  const sw = window.screen?.width || 0;
+  const sh = window.screen?.height || 0;
+  const screenMax = Math.max(sw, sh);
+  const screenMin = Math.min(sw, sh);
+  return ih >= iw ? Math.max(ih, screenMax) : Math.max(ih, screenMin);
+}
+
+function pwaExtraBottomPx() {
+  const iw = window.innerWidth || 0;
+  const ih = window.innerHeight || 0;
+  const sw = window.screen?.width || 0;
+  const sh = window.screen?.height || 0;
+  const screenMax = Math.max(sw, sh);
+  if (Math.min(iw, ih) >= 600 && screenMax < ih - 10) {
+    return 20;
+  }
+  return 0;
+}
+
 function syncViewportVars() {
   const r = document.documentElement;
   const standalone =
@@ -127,36 +149,27 @@ function syncViewportVars() {
   const vv = window.visualViewport;
   const iw = window.innerWidth || 0;
   const ih = window.innerHeight || 0;
-  const sw = window.screen?.width || 0;
-  const sh = window.screen?.height || 0;
-  const screenMax = Math.max(sw, sh);
-  const screenMin = Math.min(sw, sh);
   if (standalone) {
+    // Bug B / HyperMiler: never pin PWA to short visualViewport — use screen fillH.
+    const fillH = pwaFillHeightPx();
+    const extra = pwaExtraBottomPx();
     r.classList.add("pwa-standalone");
-    // Trust visualViewport when present. Inflating past it parks the bottom
-    // element rail just under the visible screen.
-    let h;
-    let w;
-    if (vv && vv.height > 40 && vv.width > 40) {
-      h = Math.round(vv.height);
-      w = Math.round(vv.width);
-    } else {
-      h = ih;
-      w = iw;
-      const shortGap = (ih >= iw ? screenMax : screenMin) - ih;
-      if (shortGap > 10 && shortGap < 120) h = Math.max(h, ih + shortGap);
-      if (Math.min(iw, ih) >= 600 && screenMax < ih - 10) h += 20;
-    }
+    r.style.setProperty("--pwa-fill-h", `${fillH}px`);
+    r.style.setProperty("--pwa-extra-b", `${extra}px`);
     r.style.setProperty("--vv-top", "0px");
     r.style.setProperty("--vv-left", "0px");
-    r.style.setProperty("--vv-w", w + "px");
-    r.style.setProperty("--vv-h", h + "px");
+    r.style.setProperty("--vv-w", `${iw}px`);
+    r.style.setProperty("--vv-h", `${fillH + extra}px`);
   } else if (vv && vv.height > 40 && vv.width > 40) {
+    r.classList.remove("pwa-standalone");
+    r.style.removeProperty("--pwa-fill-h");
+    r.style.removeProperty("--pwa-extra-b");
     r.style.setProperty("--vv-top", Math.max(0, Math.round(vv.offsetTop) || 0) + "px");
     r.style.setProperty("--vv-left", Math.max(0, Math.round(vv.offsetLeft) || 0) + "px");
     r.style.setProperty("--vv-w", Math.round(vv.width) + "px");
     r.style.setProperty("--vv-h", Math.round(vv.height) + "px");
   } else {
+    r.classList.remove("pwa-standalone");
     r.style.setProperty("--vv-top", "0px");
     r.style.setProperty("--vv-left", "0px");
     r.style.setProperty("--vv-w", iw + "px");

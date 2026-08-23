@@ -37,8 +37,9 @@
   <link rel="icon" type="image/png" href="icon-192.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <!--
-    iOS-full-bleed (copy HyperMiler): PWA uses screen fillH; Safari tab uses visualViewport.
-    Do not use max-height:100dvh on PWA.
+    iOS-full-bleed (copy HyperMiler / Desktop note Bug B):
+    PWA: fillH = max(innerHeight, screen axis). Safari tab: visualViewport only.
+    Do not use max-height:100dvh on PWA. Do not pin PWA to short visualViewport.
   -->
   <script>
     (function () {
@@ -60,22 +61,19 @@
         var screenMin = Math.min(sw, sh);
         if (standalone) {
           r.classList.add("pwa-standalone");
-          // Prefer visualViewport — don’t inflate past it (rail was sitting under the visible screen).
-          var h, w;
-          if (vv && vv.height > 40 && vv.width > 40) {
-            h = Math.round(vv.height);
-            w = Math.round(vv.width);
-          } else {
-            h = ih;
-            w = iw;
-            var shortGap = (ih >= iw ? screenMax : screenMin) - ih;
-            if (shortGap > 10 && shortGap < 120) h = Math.max(h, ih + shortGap);
-            if (Math.min(iw, ih) >= 600 && screenMax < ih - 10) h += 20;
+          /* Phone: fillH = max(ih, screen axis). Portrait → long edge. */
+          var fillH = ih >= iw ? Math.max(ih, screenMax) : Math.max(ih, screenMin);
+          var extra = 0;
+          /* iPad: screen often undershoots inner → safe-area extra */
+          if (Math.min(iw, ih) >= 600 && screenMax < ih - 10) {
+            extra = 20;
           }
+          r.style.setProperty("--pwa-fill-h", fillH + "px");
+          r.style.setProperty("--pwa-extra-b", extra + "px");
           r.style.setProperty("--vv-top", "0px");
           r.style.setProperty("--vv-left", "0px");
-          r.style.setProperty("--vv-w", w + "px");
-          r.style.setProperty("--vv-h", h + "px");
+          r.style.setProperty("--vv-w", iw + "px");
+          r.style.setProperty("--vv-h", fillH + extra + "px");
         } else if (vv && vv.height > 40 && vv.width > 40) {
           r.style.setProperty("--vv-top", Math.max(0, Math.round(vv.offsetTop) || 0) + "px");
           r.style.setProperty("--vv-left", Math.max(0, Math.round(vv.offsetLeft) || 0) + "px");
@@ -96,7 +94,7 @@
     href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Michroma&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=site66" />
+  <link rel="stylesheet" href="styles.css?v=site67" />
   <script type="importmap">
     {
       "imports": {
@@ -205,7 +203,7 @@
     <div class="tray" id="tray" aria-live="polite"></div>
   </div>
 
-  <script type="module" src="app.js?v=site66"></script>
+  <script type="module" src="app.js?v=site67"></script>
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
