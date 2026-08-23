@@ -96,7 +96,7 @@
     href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Michroma&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=site50" />
+  <link rel="stylesheet" href="styles.css?v=site51" />
   <script type="importmap">
     {
       "imports": {
@@ -113,6 +113,7 @@
       <div class="top-actions">
         <button type="button" class="btn" id="btn-recipes" aria-pressed="false">Library</button>
         <button type="button" class="btn ghost" id="btn-clear">Clear</button>
+        <button type="button" class="btn" id="btn-teach" aria-pressed="false">Teach</button>
       </div>
     </header>
 
@@ -158,9 +159,50 @@
       <ul class="recipe-list" id="recipe-list"></ul>
     </aside>
 
+    <aside class="sheet sheet-teach" id="sheet-teach" hidden aria-label="Teaching guide">
+      <div class="sheet-sticky">
+        <div class="sheet-toolbar">
+          <h2 class="sheet-title">Teach</h2>
+          <button type="button" class="icon-close" id="close-teach" aria-label="Close teach">×</button>
+        </div>
+        <p class="sheet-note">How to build here — then a few chemistry ideas the 3D stage makes real.</p>
+      </div>
+      <div class="teach-body">
+        <section class="teach-section">
+          <h3>How to use</h3>
+          <ul class="teach-list">
+            <li><strong>Library</strong> — search or scroll, tap a molecule, watch it assemble in 3D.</li>
+            <li><strong>Element rail</strong> — swipe the table, tap an element to place it. First atom sits at the center.</li>
+            <li><strong>Open sites</strong> — glowing ghosts show where the next atom can bond. Tap a ghost or tap the element again to auto-place.</li>
+            <li><strong>Spin &amp; zoom</strong> — drag to tumble freely; pinch to zoom. There is no “north” stop.</li>
+            <li><strong>Undo</strong> — tap the last chip in the ingredient tray to remove the last atom.</li>
+            <li><strong>Clear</strong> — wipe the stage and start fresh.</li>
+          </ul>
+        </section>
+        <section class="teach-section">
+          <h3>Chemistry bites</h3>
+          <ul class="teach-list">
+            <li><strong>Atoms &amp; bonds</strong> — atoms are the balls; bonds are the sticks. A molecule is a connected pattern of both.</li>
+            <li><strong>Valence</strong> — how many bonds an element “wants.” Oxygen usually wants 2, carbon 4, hydrogen 1. Gray tiles mean that element can’t attach right now.</li>
+            <li><strong>Shapes</strong> — water bends (~104.5°), methane is tetrahedral, boron trifluoride is flat. The free-build tries to follow those textbook angles.</li>
+            <li><strong>Covalent vs ionic</strong> — shared electrons (water, caffeine) vs charged partners (table salt). The library tags both.</li>
+            <li><strong>Names &amp; stories</strong> — free-build keeps a live name when it can; library cards add discovery year, place, and a short hook to teach and inspire.</li>
+          </ul>
+        </section>
+        <section class="teach-section">
+          <h3>Try this</h3>
+          <ul class="teach-list">
+            <li>Build <strong>water</strong>: O, then H, then H — watch the bent shape.</li>
+            <li>Open <strong>Library → Body &amp; medicine</strong> and assemble caffeine or adrenaline.</li>
+            <li>Free-build nonsense like HB₁₁ — the app allows it; chemistry may not. That’s the lesson.</li>
+          </ul>
+        </section>
+      </div>
+    </aside>
+
     <div class="tray" id="tray" aria-live="polite"></div>
   </div>
 
-  <script type="module" src="app.js?v=site49"></script>
+  <script type="module" src="app.js?v=site51"></script>
 </body>
 </html>

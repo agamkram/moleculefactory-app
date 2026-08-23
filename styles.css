@@ -251,6 +251,56 @@ body {
   margin: 0.45rem 0 0;
 }
 
+.sheet-title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.teach-body {
+  padding: 0.35rem 0.85rem calc(0.85rem + var(--safe-b));
+}
+
+.teach-section {
+  margin: 0.85rem 0 1.1rem;
+}
+
+.teach-section h3 {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #ffb45c;
+}
+
+.teach-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.teach-list li {
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.65rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: #c5d0e0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.teach-list strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

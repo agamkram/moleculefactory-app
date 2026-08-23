@@ -32,7 +32,9 @@ const recipeSearchClear = document.getElementById("recipe-search-clear");
 const elementRail = document.getElementById("element-rail");
 const elementRailInner = document.getElementById("element-rail-inner");
 const sheetRecipes = document.getElementById("sheet-recipes");
+const sheetTeach = document.getElementById("sheet-teach");
 const btnRecipes = document.getElementById("btn-recipes");
+const btnTeach = document.getElementById("btn-teach");
 const btnClear = document.getElementById("btn-clear");
 
 let focusedSym = "H";
@@ -251,8 +253,12 @@ function getStageInsets() {
       bottom = Math.max(bottom, stageRect.bottom - r.top + 12);
     }
   }
-  if (sheetRecipes && !sheetRecipes.hidden) {
-    const r = sheetRecipes.getBoundingClientRect();
+  const openSheet =
+    (sheetRecipes && !sheetRecipes.hidden && sheetRecipes) ||
+    (sheetTeach && !sheetTeach.hidden && sheetTeach) ||
+    null;
+  if (openSheet) {
+    const r = openSheet.getBoundingClientRect();
     // Full-width sheet: frame into whatever stage remains around it.
     if (r.width > w * 0.55) {
       top = Math.max(top, r.top - stageRect.top + 8);
@@ -831,12 +837,18 @@ function applyRailVisibility() {
 }
 
 function closeRecipes() {
-  sheetRecipes.hidden = true;
-  btnRecipes.setAttribute("aria-pressed", "false");
+  if (sheetRecipes) sheetRecipes.hidden = true;
+  btnRecipes?.setAttribute("aria-pressed", "false");
+}
+
+function closeTeach() {
+  if (sheetTeach) sheetTeach.hidden = true;
+  btnTeach?.setAttribute("aria-pressed", "false");
 }
 
 function closeSheets() {
   closeRecipes();
+  closeTeach();
 }
 
 let railStep = 0;
@@ -1077,6 +1089,7 @@ function buildRecipes(filterText = "") {
 
 btnRecipes.addEventListener("click", () => {
   if (sheetRecipes.hidden) {
+    closeTeach();
     sheetRecipes.hidden = false;
     btnRecipes.setAttribute("aria-pressed", "true");
     if (recipeSearch) {
@@ -1090,6 +1103,18 @@ btnRecipes.addEventListener("click", () => {
   }
 });
 document.getElementById("close-recipes").addEventListener("click", closeRecipes);
+
+btnTeach?.addEventListener("click", () => {
+  if (!sheetTeach) return;
+  if (sheetTeach.hidden) {
+    closeRecipes();
+    sheetTeach.hidden = false;
+    btnTeach.setAttribute("aria-pressed", "true");
+  } else {
+    closeTeach();
+  }
+});
+document.getElementById("close-teach")?.addEventListener("click", closeTeach);
 function syncRecipeSearchClear() {
   if (!recipeSearchClear || !recipeSearch) return;
   recipeSearchClear.hidden = !recipeSearch.value;
