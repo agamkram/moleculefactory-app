@@ -64,7 +64,7 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.enableRotate = false;
 controls.minDistance = 1.5;
-controls.maxDistance = 48;
+controls.maxDistance = 160; // room to frame DNA / C60 / cholesterol
 controls.target.set(0, 0.15, 0);
 // Leave one-finger / left-drag to our free molecule spin (Orbit would no-op-rotate).
 controls.mouseButtons.LEFT = null;
@@ -303,11 +303,12 @@ function applyFrameFromSize(radius) {
   const hFov = 2 * Math.atan(Math.tan(vFov / 2) * aspect);
 
   // Fit sphere in the usable width & height (with padding).
-  const pad = 1.28;
+  // Larger molecules get a bit more margin so library giants land fully in frame.
+  const pad = r > 8 ? 1.55 : r > 4 ? 1.42 : 1.32;
   const distH = (r * pad) / Math.tan(vFov / 2) / (inset.availH / inset.h);
   const distW = (r * pad) / Math.tan(hFov / 2) / (inset.availW / inset.w);
   let dist = Math.max(distH, distW);
-  dist = Math.min(controls.maxDistance * 0.95, Math.max(controls.minDistance + 0.6, dist));
+  dist = Math.min(controls.maxDistance * 0.98, Math.max(controls.minDistance + 0.6, dist));
 
   // Keep a pleasant viewing direction.
   _fitDir.set(0.42, 0.22, 1).normalize();
