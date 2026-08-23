@@ -1099,10 +1099,10 @@ export const LORE = {
     place: "France / Europe",
     hook: "The steroid your membranes need — same family as hormones, famous in blood tests.",
   },
-  "dna_4bp": {
+  "dna_10bp": {
     discovered: "1953 structure",
     place: "UK",
-    hook: "Four rungs of the double helix — a tiny readable scrap of the molecule that writes you.",
+    hook: "Ten base pairs — one full twist of the double helix. Two strands, paired letters, spiral stairs.",
   },
 
 };
