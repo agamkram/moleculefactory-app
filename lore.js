@@ -27,7 +27,7 @@ export const LORE = {
   "structured_water": {
     discovered: "marketing dept.",
     place: "Wellness aisle",
-    hook: "A hexagon of ordinary waters, sold under the fake formula H₃O₂ — pretty ring, nonsense math.",
+    hook: "Six waters in a hydrogen-bonded hexagon — real count (H₂O)₆ / H₁₂O₆, not the H₃O₂ on the bottle.",
   },
   "co2": {
     discovered: "1754",
