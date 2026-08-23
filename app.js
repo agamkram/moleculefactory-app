@@ -54,7 +54,8 @@ stage.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 // No fog — zooming out must not fade the molecule.
 
-const camera = new THREE.PerspectiveCamera(42, 1, 0.05, 120);
+// Far plane must stay beyond Orbit maxDistance or big zooms clip the molecule away.
+const camera = new THREE.PerspectiveCamera(42, 1, 0.05, 500);
 camera.position.set(5.5, 3.4, 10.5);
 
 // Orbit for zoom/pan only. Spin is applied to the molecule group so there is
