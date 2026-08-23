@@ -27,7 +27,7 @@ export const LORE = {
   "structured_water": {
     discovered: "marketing dept.",
     place: "Wellness aisle",
-    hook: "Six ordinary waters in a pretty ring — same H₂O, extra price tag, zero miracle.",
+    hook: "Six waters holding hands in a ring — real hydrogen bonds, still just H₂O with better branding.",
   },
   "co2": {
     discovered: "1754",
