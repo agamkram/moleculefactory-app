@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#07090f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MoleculeFactory" />
+  <meta
+    name="description"
+    content="Build molecules in 3D from the periodic table. Library auto-assembles known structures."
+  />
+  <!-- social-share meta (tier-a) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Mark Maga" />
+  <meta property="og:title" content="MoleculeFactory — atoms · bonds · names" />
+  <meta
+    property="og:description"
+    content="Build molecules in 3D from the periodic table. Library auto-assembles known structures."
+  />
+  <meta property="og:url" content="https://molecule.markmaga.com/" />
+  <link rel="canonical" href="https://molecule.markmaga.com/" />
+  <meta property="og:image" content="https://molecule.markmaga.com/icon-512.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="MoleculeFactory — atoms · bonds · names" />
+  <meta
+    name="twitter:description"
+    content="Build molecules in 3D from the periodic table. Library auto-assembles known structures."
+  />
+  <meta name="twitter:image" content="https://molecule.markmaga.com/icon-512.png" />
+  <title>MoleculeFactory — atoms · bonds · names | Mark Maga</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <!--
+    iOS-full-bleed (copy HyperMiler): PWA uses screen fillH; Safari tab uses visualViewport.
+    Do not use max-height:100dvh on PWA.
+  -->
+  <script>
+    (function () {
+      try {
+        var r = document.documentElement;
+        var n = window.navigator;
+        var standalone =
+          n.standalone === true ||
+          (window.matchMedia &&
+            (window.matchMedia("(display-mode: standalone)").matches ||
+              window.matchMedia("(display-mode: fullscreen)").matches ||
+              window.matchMedia("(display-mode: minimal-ui)").matches));
+        var vv = window.visualViewport;
+        var iw = window.innerWidth || 0;
+        var ih = window.innerHeight || 0;
+        var sw = (window.screen && window.screen.width) || 0;
+        var sh = (window.screen && window.screen.height) || 0;
+        var screenMax = Math.max(sw, sh);
+        var screenMin = Math.min(sw, sh);
+        if (standalone) {
+          r.classList.add("pwa-standalone");
+          // Prefer visualViewport — don’t inflate past it (rail was sitting under the visible screen).
+          var h, w;
+          if (vv && vv.height > 40 && vv.width > 40) {
+            h = Math.round(vv.height);
+            w = Math.round(vv.width);
+          } else {
+            h = ih;
+            w = iw;
+            var shortGap = (ih >= iw ? screenMax : screenMin) - ih;
+            if (shortGap > 10 && shortGap < 120) h = Math.max(h, ih + shortGap);
+            if (Math.min(iw, ih) >= 600 && screenMax < ih - 10) h += 20;
+          }
+          r.style.setProperty("--vv-top", "0px");
+          r.style.setProperty("--vv-left", "0px");
+          r.style.setProperty("--vv-w", w + "px");
+          r.style.setProperty("--vv-h", h + "px");
+        } else if (vv && vv.height > 40 && vv.width > 40) {
+          r.style.setProperty("--vv-top", Math.max(0, Math.round(vv.offsetTop) || 0) + "px");
+          r.style.setProperty("--vv-left", Math.max(0, Math.round(vv.offsetLeft) || 0) + "px");
+          r.style.setProperty("--vv-w", Math.round(vv.width) + "px");
+          r.style.setProperty("--vv-h", Math.round(vv.height) + "px");
+        } else {
+          r.style.setProperty("--vv-top", "0px");
+          r.style.setProperty("--vv-left", "0px");
+          r.style.setProperty("--vv-w", iw + "px");
+          r.style.setProperty("--vv-h", ih + "px");
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Michroma&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css?v=site49" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three.module.js",
+        "three/addons/": "./vendor/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <header class="top">
+      <h1 class="app-title">MoleculeFactory</h1>
+      <div class="top-actions">
+        <button type="button" class="btn" id="btn-recipes" aria-pressed="false">Library</button>
+        <button type="button" class="btn ghost" id="btn-clear">Clear</button>
+      </div>
+    </header>
+
+    <div id="stage" aria-label="3D molecule stage"></div>
+
+    <div class="hud" id="hud">
+      <div class="hud-formula" id="hud-formula">—</div>
+      <div class="hud-name" id="hud-name">Pick atoms or open Library</div>
+      <div class="hud-hint" id="hud-hint">Drag to spin · pinch to zoom</div>
+    </div>
+
+    <aside class="element-rail" id="element-rail" aria-label="Elements 1 to 118, scroll sideways">
+      <div class="element-rail-inner" id="element-rail-inner"></div>
+    </aside>
+
+    <aside class="sheet" id="sheet-recipes" hidden aria-label="Molecule library">
+      <div class="sheet-sticky">
+        <div class="sheet-toolbar">
+          <label class="recipe-search-wrap">
+            <span class="visually-hidden">Search library</span>
+            <input
+              type="search"
+              id="recipe-search"
+              class="recipe-search"
+              placeholder="Search name or formula…"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button
+              type="button"
+              class="recipe-search-clear"
+              id="recipe-search-clear"
+              aria-label="Clear search"
+              hidden
+            >
+              ×
+            </button>
+          </label>
+          <button type="button" class="icon-close" id="close-recipes" aria-label="Close library">×</button>
+        </div>
+        <p class="sheet-note">214 molecules with discovery stories — including Body &amp; medicine. Search or scroll, then watch one assemble in 3D.</p>
+      </div>
+      <ul class="recipe-list" id="recipe-list"></ul>
+    </aside>
+
+    <div class="tray" id="tray" aria-live="polite"></div>
+  </div>
+
+  <script type="module" src="app.js?v=site49"></script>
+</body>
+</html>
