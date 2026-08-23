@@ -96,7 +96,7 @@ export const RECIPES = [
     id: "structured_water",
     formula: "(H₂O)₆",
     name: "Structured water",
-    hint: "hexamer · H₁₂O₆",
+    hint: "hexamer · six waters",
     category: "everyday",
     kind: "covalent",
     atoms: [
