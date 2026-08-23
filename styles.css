@@ -429,6 +429,9 @@ body {
   padding: 0 max(0.2rem, var(--safe-r)) 0 max(0.15rem, var(--safe-l));
   scrollbar-width: none;
   touch-action: pan-x;
+  /* Promote a stable scroll layer — cuts tile flicker on iOS */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .element-rail-inner::-webkit-scrollbar {
@@ -442,7 +445,7 @@ body {
   width: var(--cell);
   height: var(--cell);
   margin: 0;
-  padding: 0.1rem 0.08rem 0.08rem;
+  padding: 0.14rem 0.1rem 0.1rem;
   border-radius: 0.2rem;
   border: 1px solid rgba(0, 0, 0, 0.35);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
@@ -459,17 +462,20 @@ body {
   z-index: 1;
   /* Keep tile colors — never flash to black on tap */
   -webkit-tap-highlight-color: transparent;
+  /* Isolate paint so scrolling neighbors don’t repaint the whole rail */
+  contain: layout paint;
 }
 
 .el-cell:active:not(.is-blocked):not(:disabled) {
-  filter: brightness(1.06);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .el-cell.is-blocked,
 .el-cell:disabled {
-  /* Unavailable: a bit more muted, still readable */
-  filter: grayscale(0.55) brightness(0.86) saturate(0.65);
-  opacity: 0.68;
+  /* No CSS filter — filters on ~350 scroll tiles caused intermittent flicker */
+  opacity: 0.55;
   cursor: not-allowed;
   position: relative;
 }
@@ -480,14 +486,16 @@ body {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: rgba(7, 9, 15, 0.22);
+  background: rgba(7, 9, 15, 0.32);
   pointer-events: none;
 }
 
 .el-cell.is-pending:not(.is-blocked) {
   outline: 2px solid rgba(94, 200, 255, 0.9);
   outline-offset: 1px;
-  filter: brightness(1.12);
+  box-shadow:
+    inset 0 0 0 1px rgba(94, 200, 255, 0.35),
+    0 0 10px rgba(94, 200, 255, 0.25);
 }
 
 .el-cell .el-top {
@@ -496,7 +504,8 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.08rem;
-  line-height: 1.05;
+  line-height: 1.25; /* room for descenders (g in gas) */
+  padding-bottom: 0.06rem;
 }
 
 .el-cell .el-z {
@@ -504,20 +513,21 @@ body {
   font-weight: 600;
   opacity: 0.85;
   flex: 0 0 auto;
+  line-height: 1.25;
 }
 
 .el-cell .el-state {
-  font-size: 0.34rem;
+  font-size: 0.48rem;
   font-weight: 600;
   letter-spacing: 0.01em;
   text-transform: lowercase;
   opacity: 0.88;
   text-align: right;
-  max-width: 58%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 62%;
+  /* no overflow:hidden — it clipped the g/y descenders */
   white-space: nowrap;
   flex: 0 1 auto;
+  line-height: 1.25;
 }
 
 .el-cell .el-sym {
@@ -558,7 +568,7 @@ body.rail-open {
     font-size: 0.7rem;
   }
   .el-cell .el-state {
-    font-size: 0.38rem;
+    font-size: 0.54rem;
   }
 }
 

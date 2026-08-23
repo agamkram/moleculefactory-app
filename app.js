@@ -37,7 +37,6 @@ const btnRecipes = document.getElementById("btn-recipes");
 const btnAbout = document.getElementById("btn-about");
 const btnClear = document.getElementById("btn-clear");
 
-let focusedSym = "H";
 /** @type {string | null} */
 let pendingEl = null;
 const graph = createGraph();
@@ -854,7 +853,6 @@ function closeSheets() {
 let railStep = 0;
 let railSetW = 0;
 let railPadL = 0;
-let railRaf = 0;
 let railEndTimer = 0;
 let railDragging = false;
 
@@ -865,6 +863,7 @@ function makeElementCell(sym) {
   btn.className = "el-cell";
   btn.dataset.sym = sym;
   const state = info.state || "solid";
+  const stateLabel = state === "unknown" ? "?" : state;
   btn.title = `${info.name} (${sym}) · Z ${info.z} · ${state}`;
   btn.setAttribute(
     "aria-label",
@@ -876,7 +875,7 @@ function makeElementCell(sym) {
   btn.innerHTML =
     `<span class="el-top">` +
     `<span class="el-z">${info.z}</span>` +
-    `<span class="el-state">${state}</span>` +
+    `<span class="el-state">${stateLabel}</span>` +
     `</span>` +
     `<span class="el-sym">${sym}</span>` +
     `<span class="el-name">${info.name}</span>`;
@@ -900,33 +899,11 @@ function measureRailLayout() {
   railSetW = elementRailInner.scrollWidth / 3;
 }
 
-function updateRailScales() {
-  // Rail cells stay equal size so taps aren’t stolen by a scaled neighbor.
-  if (!railStep) measureRailLayout();
-  if (!railStep) return;
-  const cells = elementRailInner.children;
-  if (!cells.length) return;
-  const railRect = elementRailInner.getBoundingClientRect();
-  const scroll = elementRailInner.scrollLeft;
-  const peakViewX = railRect.left + railPadL + railStep * 0.5;
-  let best = null;
-  let bestDist = Infinity;
-  for (let i = 0; i < cells.length; i++) {
-    const cell = cells[i];
-    cell.style.transform = "";
-    cell.style.zIndex = "";
-    const viewCx =
-      railRect.left + (cell.offsetLeft - scroll) + cell.offsetWidth * 0.5;
-    const dist = Math.abs(viewCx - peakViewX);
-    if (dist < bestDist) {
-      bestDist = dist;
-      best = cell;
-    }
-  }
-  if (best?.dataset?.sym) focusedSym = best.dataset.sym;
-}
-
-/** Only recenter copies after scroll settles — never mid-drag (that glitched). */
+/**
+ * Infinite-rail recenter: jump by one full copy width when scroll leaves the
+ * middle band. Do not touch cell styles here — clearing transform/zIndex on
+ * every tile each frame caused scroll flicker.
+ */
 function normalizeRailCopies() {
   if (railDragging || !railSetW) return;
   let s = elementRailInner.scrollLeft;
@@ -936,28 +913,22 @@ function normalizeRailCopies() {
   if (Math.abs(s - elementRailInner.scrollLeft) > 0.5) {
     elementRailInner.scrollLeft = s;
   }
-  updateRailScales();
 }
 
 function onRailScroll() {
-  if (railRaf) return;
-  railRaf = requestAnimationFrame(() => {
-    railRaf = 0;
-    updateRailScales();
-  });
+  // Only normalize after scroll settles — never mid-drag.
   clearTimeout(railEndTimer);
   railEndTimer = setTimeout(() => {
     if (!railDragging) normalizeRailCopies();
-  }, 120);
+  }, 140);
 }
 
 function centerRailOnMiddleCopy() {
   measureRailLayout();
   if (railSetW > 0 && railStep > 0) {
-    // Second slot of middle copy = LARGE; one small from prior copy on the left.
+    // Second slot of middle copy; one cell from prior copy on the left.
     elementRailInner.scrollLeft = railSetW - railStep;
   }
-  updateRailScales();
 }
 
 function buildElementRail() {
