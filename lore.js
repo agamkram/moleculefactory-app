@@ -27,7 +27,7 @@ export const LORE = {
   "structured_water": {
     discovered: "marketing dept.",
     place: "Wellness aisle",
-    hook: "Six waters holding hands in a ring — real hydrogen bonds, still just H₂O with better branding.",
+    hook: "Sold as H₃O₂ — an extra H and O that chemistry does not stock. Still just water with a story.",
   },
   "co2": {
     discovered: "1754",
