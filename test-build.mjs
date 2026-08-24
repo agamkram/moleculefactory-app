@@ -348,6 +348,77 @@ function buildCenter(center, ligands) {
   assert(covalent > 100, `many covalent recipes (${covalent})`);
 }
 
+// --- DNA 11 bp: each base pair populated (phosphate+sugar+base, R↔Y, H-bond) ---
+{
+  const dna = RECIPES.find((r) => r.id === "dna_11bp");
+  assert(!!dna, "dna_11bp recipe exists");
+  if (dna) {
+    const atoms = dna.atoms;
+    const bonds = dna.bonds;
+    const bondSet = new Set(bonds.map(([a, b]) => (a < b ? `${a}-${b}` : `${b}-${a}`)));
+    const hasBond = (a, b) => bondSet.has(a < b ? `${a}-${b}` : `${b}-${a}`);
+    const pIdx = [];
+    for (let i = 0; i < atoms.length; i++) if (atoms[i].el === "P") pIdx.push(i);
+    assert(pIdx.length === 22, `dna_11bp has 22 phosphates (got ${pIdx.length})`);
+    assert(pIdx.length % 2 === 0, "dna phosphates even (paired strands)");
+
+    const gaps = [];
+    for (let i = 0; i < pIdx.length - 1; i++) gaps.push(pIdx[i + 1] - pIdx[i]);
+    gaps.push(atoms.length - pIdx[pIdx.length - 1]);
+
+    const nBp = pIdx.length / 2;
+    assert(nBp === 11, `dna_11bp has 11 base pairs (got ${nBp})`);
+
+    let allOk = true;
+    for (let p = 0; p < nBp; p++) {
+      const iA = 2 * p;
+      const iB = 2 * p + 1;
+      const nA = gaps[iA];
+      const nB = gaps[iB];
+      const startA = pIdx[iA];
+      const startB = pIdx[iB];
+      const elsA = atoms.slice(startA, startA + nA).map((a) => a.el).join("");
+      const elsB = atoms.slice(startB, startB + nB).map((a) => a.el).join("");
+      const baseA = elsA.slice(9);
+      const baseB = elsB.slice(9);
+      const typeA = baseA === "NCNCN" ? "R" : baseA === "NCCN" ? "Y" : "?";
+      const typeB = baseB === "NCNCN" ? "R" : baseB === "NCCN" ? "Y" : "?";
+      const tipA = startA + nA - 1;
+      const tipB = startB + nB - 1;
+      const expectA = p % 2 === 0 ? "R" : "Y";
+      const sugarOk =
+        elsA.startsWith("POOOCCCCO") &&
+        elsB.startsWith("POOOCCCCO") &&
+        elsA[9] === "N" &&
+        elsB[9] === "N";
+      const pairOk = new Set([typeA, typeB]).size === 2 && typeA !== "?" && typeB !== "?";
+      const seqOk = typeA === expectA;
+      const hOk =
+        atoms[tipA].el === "N" && atoms[tipB].el === "N" && hasBond(tipA, tipB);
+      const Pa = atoms[startA];
+      const Pb = atoms[startB];
+      const opposite = Pa.x * Pb.x + Pa.y * Pb.y < 0;
+      const sameZ = Math.abs(Pa.z - Pb.z) < 0.02;
+      const ok = sugarOk && pairOk && seqOk && hOk && opposite && sameZ;
+      if (!ok) allOk = false;
+      assert(
+        ok,
+        `dna bp${String(p).padStart(2, "0")} populated ` +
+          `A:${typeA}(${baseA})↔B:${typeB}(${baseB}) ` +
+          `sugar=${sugarOk} pair=${pairOk} seq=${seqOk} H=${hOk} opp=${opposite} z=${sameZ}`
+      );
+    }
+    // Backbone continuity along each strand
+    let backboneOk = true;
+    for (let p = 0; p < nBp - 1; p++) {
+      if (!hasBond(pIdx[2 * p], pIdx[2 * (p + 1)])) backboneOk = false;
+      if (!hasBond(pIdx[2 * p + 1], pIdx[2 * (p + 1) + 1])) backboneOk = false;
+    }
+    assert(backboneOk, "dna_11bp backbone continuous on both strands");
+    assert(allOk, "dna_11bp every base pair correctly populated");
+  }
+}
+
 if (failed) {
   console.error(`\n${failed} failure(s)`);
   process.exit(1);

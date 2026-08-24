@@ -29,6 +29,7 @@ const trayEl = document.getElementById("tray");
 const recipeList = document.getElementById("recipe-list");
 const recipeSearch = document.getElementById("recipe-search");
 const recipeSearchClear = document.getElementById("recipe-search-clear");
+const recipeCatsEl = document.getElementById("recipe-cats");
 const elementRail = document.getElementById("element-rail");
 const elementRailInner = document.getElementById("element-rail-inner");
 const sheetRecipes = document.getElementById("sheet-recipes");
@@ -40,6 +41,19 @@ const btnRotate = document.getElementById("btn-rotate");
 
 /** @type {string | null} */
 let pendingEl = null;
+/** Library category chip: null = All. */
+let libraryCategory = null;
+
+const RECIPE_CAT_SHORT = {
+  gases: "Gases",
+  inorganic: "Inorganics",
+  acids_bases: "Acids",
+  salts: "Salts",
+  hydrocarbons: "Hydrocarbons",
+  organics: "Organics",
+  body_medicine: "Body",
+  everyday: "Everyday",
+};
 const graph = createGraph();
 
 const renderer = new THREE.WebGLRenderer({
@@ -106,6 +120,8 @@ let buildToken = 0;
 /** When true, assemble must not reframe — camera already locked to final size. */
 let cameraFrameLocked = false;
 let activeRecipe = null;
+/** Recipe showcase: chips for teaching, no undo. Free-build unlocks the tray. */
+let trayLocked = false;
 let _layoutW = 0;
 let _layoutH = 0;
 let pickMoved = false;
@@ -620,7 +636,7 @@ function recipeSubHint(recipe) {
 }
 
 function undoLastAtom() {
-  if (!graph.atoms.length) return;
+  if (trayLocked || !graph.atoms.length) return;
   const removed = removeLastAtom(graph);
   if (!removed) return;
   activeRecipe = null;
@@ -633,16 +649,22 @@ function undoLastAtom() {
 
 function refreshTray() {
   trayEl.innerHTML = "";
+  trayEl.classList.toggle("is-locked", trayLocked);
+  if (trayLocked) {
+    trayEl.setAttribute("aria-label", "Ingredients");
+  } else {
+    trayEl.removeAttribute("aria-label");
+  }
   const syms = graphSymbols(graph);
   syms.forEach((el, i) => {
-    const isLast = i === syms.length - 1;
-    const chip = document.createElement(isLast ? "button" : "span");
-    if (isLast) chip.type = "button";
-    chip.className = isLast ? "chip chip-undo" : "chip";
+    const canUndo = !trayLocked && i === syms.length - 1;
+    const chip = document.createElement(canUndo ? "button" : "span");
+    if (canUndo) chip.type = "button";
+    chip.className = canUndo ? "chip chip-undo" : "chip";
     chip.textContent = el;
     chip.style.background = ELEMENTS[el]?.color || "#ccc";
     chip.style.color = inkFor(ELEMENTS[el]?.color || "#ccc");
-    if (isLast) {
+    if (canUndo) {
       chip.title = `Undo last atom (${el})`;
       chip.setAttribute("aria-label", `Undo last atom, ${el}`);
       chip.addEventListener("click", (e) => {
@@ -700,6 +722,7 @@ function paintPending() {
 
 function finishPlace(el) {
   activeRecipe = null;
+  trayLocked = false;
   if (
     el &&
     canSelectElement(el, graph) &&
@@ -729,6 +752,7 @@ function selectElement(sym) {
     // Showcase / saturated recipe: start a fresh free build with this element.
     if (!activeRecipe) return;
     activeRecipe = null;
+    trayLocked = false;
     clearGraph(graph);
     resetSpin();
     setAutoSpin(false);
@@ -751,6 +775,7 @@ function selectElement(sym) {
       return;
     }
     activeRecipe = null;
+    trayLocked = false;
     pendingEl = null;
     paintPending();
     resetBuildCamera();
@@ -779,6 +804,7 @@ function resetSpin() {
 function playRecipe(recipe) {
   activeRecipe = recipe;
   pendingEl = null;
+  trayLocked = true;
   clearGraph(graph);
   resetSpin();
   setAutoSpin(true);
@@ -1079,17 +1105,123 @@ function appendRecipeRow(r) {
   recipeList.appendChild(li);
 }
 
+function recipesInLibraryScope() {
+  if (!libraryCategory) return RECIPES;
+  return RECIPES.filter((r) => r.category === libraryCategory);
+}
+
+function syncRecipeCatChips() {
+  if (!recipeCatsEl) return;
+  recipeCatsEl.querySelectorAll(".recipe-cat-chip").forEach((btn) => {
+    const id = btn.dataset.cat || "";
+    const on = id === "" ? libraryCategory == null : libraryCategory === id;
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+}
+
+function makeRecipeCatChip(id, label) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "recipe-cat-chip";
+  btn.dataset.cat = id;
+  btn.textContent = label;
+  btn.setAttribute("aria-pressed", "false");
+  btn.addEventListener("click", () => {
+    libraryCategory = id || null;
+    syncRecipeCatChips();
+    buildRecipes(recipeSearch?.value || "");
+    // New category list — don't keep the previous scroll offset.
+    if (sheetRecipes) sheetRecipes.scrollTop = 0;
+  });
+  return btn;
+}
+
+/** Pack category chips into two rows — content-sized labels, no ellipses. */
+function buildRecipeCatChips() {
+  if (!recipeCatsEl) return;
+  const defs = [
+    { id: "", label: "All" },
+    ...RECIPE_CATEGORIES.map((cat) => ({
+      id: cat.id,
+      label: RECIPE_CAT_SHORT[cat.id] || cat.label,
+    })),
+  ];
+  const chips = defs.map((d) => makeRecipeCatChip(d.id, d.label));
+
+  // Measure natural (label) widths — don't let flex grow skew the packer.
+  recipeCatsEl.replaceChildren(...chips);
+  recipeCatsEl.style.flexDirection = "row";
+  recipeCatsEl.style.flexWrap = "nowrap";
+  for (const c of chips) c.style.flex = "0 0 auto";
+  const gapPx = (() => {
+    const g =
+      getComputedStyle(recipeCatsEl).gap ||
+      getComputedStyle(recipeCatsEl).columnGap;
+    const n = parseFloat(g);
+    return Number.isFinite(n) ? n : 6;
+  })();
+  const widths = chips.map((c) => c.getBoundingClientRect().width);
+  const avail = recipeCatsEl.clientWidth || 0;
+  for (const c of chips) c.style.flex = "";
+
+  let split = Math.ceil(chips.length / 2);
+  if (widths.length >= 2) {
+    let bestScore = Infinity;
+    const prefix = [0];
+    for (const w of widths) prefix.push(prefix[prefix.length - 1] + w);
+    for (let i = 1; i < chips.length; i++) {
+      const w1 = prefix[i] + (i - 1) * gapPx;
+      const w2 =
+        prefix[chips.length] - prefix[i] + (chips.length - i - 1) * gapPx;
+      const overflow =
+        avail > 0 ? Math.max(0, w1 - avail) + Math.max(0, w2 - avail) : 0;
+      // Prefer balanced rows that fit; keep category order.
+      const score = overflow * 1000 + Math.abs(w1 - w2);
+      if (score < bestScore) {
+        bestScore = score;
+        split = i;
+      }
+    }
+  }
+
+  const row1 = document.createElement("div");
+  row1.className = "recipe-cats-row";
+  const row2 = document.createElement("div");
+  row2.className = "recipe-cats-row";
+  for (let i = 0; i < split; i++) row1.appendChild(chips[i]);
+  for (let i = split; i < chips.length; i++) row2.appendChild(chips[i]);
+  recipeCatsEl.style.flexDirection = "";
+  recipeCatsEl.style.flexWrap = "";
+  recipeCatsEl.replaceChildren(row1, row2);
+  syncRecipeCatChips();
+}
+
 function buildRecipes(filterText = "") {
   const q = (filterText || "").trim().toLowerCase();
   recipeList.innerHTML = "";
   let shown = 0;
+  const scope = recipesInLibraryScope();
 
   if (q) {
-    // Live search: best name/formula hits first (feels like autocomplete).
-    const ranked = RECIPES.map((r) => ({ r, score: recipeSearchScore(r, q) }))
+    // Live search within the active category chip (All = whole library).
+    const ranked = scope
+      .map((r) => ({ r, score: recipeSearchScore(r, q) }))
       .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score || a.r.name.localeCompare(b.r.name));
     for (const { r } of ranked) {
+      appendRecipeRow(r);
+      shown += 1;
+    }
+  } else if (libraryCategory) {
+    const cat = RECIPE_CATEGORIES.find((c) => c.id === libraryCategory);
+    const items = scope;
+    if (cat && items.length) {
+      const head = document.createElement("li");
+      head.className = "recipe-cat";
+      head.textContent = cat.label;
+      recipeList.appendChild(head);
+    }
+    for (const r of items) {
       appendRecipeRow(r);
       shown += 1;
     }
@@ -1111,7 +1243,14 @@ function buildRecipes(filterText = "") {
   if (!shown) {
     const empty = document.createElement("li");
     empty.className = "recipe-empty";
-    empty.textContent = q ? `No molecules match “${filterText.trim()}”` : "No molecules";
+    const catLabel = libraryCategory
+      ? RECIPE_CATEGORIES.find((c) => c.id === libraryCategory)?.label
+      : null;
+    empty.textContent = q
+      ? catLabel
+        ? `No molecules match “${filterText.trim()}” in ${catLabel}`
+        : `No molecules match “${filterText.trim()}”`
+      : "No molecules";
     recipeList.appendChild(empty);
   }
 }
@@ -1125,7 +1264,13 @@ btnRecipes.addEventListener("click", () => {
       recipeSearch.value = recipeSearch.value || "";
       buildRecipes(recipeSearch.value);
       syncRecipeSearchClear();
-      requestAnimationFrame(() => recipeSearch.focus());
+      requestAnimationFrame(() => {
+        // Sheet was display:none at boot — pack chips now that width is real.
+        buildRecipeCatChips();
+        recipeSearch.focus();
+      });
+    } else {
+      requestAnimationFrame(() => buildRecipeCatChips());
     }
   } else {
     closeRecipes();
@@ -1164,6 +1309,7 @@ recipeSearchClear?.addEventListener("click", () => {
 btnClear.addEventListener("click", () => {
   activeRecipe = null;
   pendingEl = null;
+  trayLocked = false;
   clearGraph(graph);
   resetSpin();
   setAutoSpin(false);
@@ -1203,6 +1349,7 @@ function onStageLayout({ reframe = true, rail = false } = {}) {
 
 window.addEventListener("resize", () => {
   onStageLayout({ reframe: true, rail: true });
+  if (sheetRecipes && !sheetRecipes.hidden) buildRecipeCatChips();
 });
 if (window.visualViewport) {
   // vv resize changes usable stage on phones — must reframe or boot caffeine “pops”.
@@ -1215,6 +1362,7 @@ buildElementRail();
 fit();
 _layoutW = stage.clientWidth || window.innerWidth;
 _layoutH = stage.clientHeight || window.innerHeight;
+buildRecipeCatChips();
 buildRecipes();
 syncRecipeSearchClear();
 
@@ -1222,6 +1370,7 @@ applyRailVisibility();
 {
   const boot = RECIPES.find((r) => r.id === "caffeine");
   if (boot) {
+    // Showcase tray: chips for teaching, no undo (Clear / free-build unlocks).
     playRecipe(boot);
   } else {
     syncBuildUi();

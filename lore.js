@@ -1099,10 +1099,10 @@ export const LORE = {
     place: "France / Europe",
     hook: "The steroid your membranes need — same family as hormones, famous in blood tests.",
   },
-  "dna_10bp": {
+  "dna_11bp": {
     discovered: "1953 structure",
     place: "UK",
-    hook: "Ten base pairs — one full twist of the double helix. Two strands, paired letters, spiral stairs.",
+    hook: "One full twist here — the human genome is about 3.1 billion base pairs. Two strands, paired letters, spiral stairs.",
   },
 
 };

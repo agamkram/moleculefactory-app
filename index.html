@@ -94,7 +94,7 @@
     href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Michroma&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=site78" />
+  <link rel="stylesheet" href="styles.css?v=site93" />
   <script type="importmap">
     {
       "imports": {
@@ -167,7 +167,12 @@
           </label>
           <button type="button" class="icon-close" id="close-recipes" aria-label="Close library">×</button>
         </div>
-        <p class="sheet-note">220 molecules with discovery stories — including Body &amp; medicine. Search or scroll, then watch one assemble in 3D.</p>
+        <div
+          class="recipe-cats"
+          id="recipe-cats"
+          role="toolbar"
+          aria-label="Library categories"
+        ></div>
       </div>
       <ul class="recipe-list" id="recipe-list"></ul>
     </aside>
@@ -184,11 +189,11 @@
         <section class="about-section">
           <h3>How to use</h3>
           <ul class="about-list">
-            <li><strong>Library</strong> — search or scroll, tap a molecule, watch it assemble in 3D. Type a letter to jump to best name matches (a → Acetaminophen, Adenine…).</li>
+            <li><strong>Library</strong> — pick a category chip or search, tap a molecule, watch it assemble in 3D. Type a letter to jump to best name matches (a → Acetaminophen, Adenine…).</li>
             <li><strong>Element rail</strong> — swipe the table, tap an element to place it. First atom sits at the center. Each tile shows Z, symbol, name, and room-temp state (gas / liquid / solid / ?).</li>
             <li><strong>Open sites</strong> — glowing ghosts show where the next atom can bond. Tap a ghost or tap the element again to auto-place.</li>
             <li><strong>Spin &amp; zoom</strong> — drag to tumble freely; pinch to zoom.</li>
-            <li><strong>Undo</strong> — tap the last chip in the ingredient tray to remove the last atom.</li>
+            <li><strong>Undo</strong> — in free-build, tap the last chip in the ingredient tray to remove the last atom. Library molecules keep the tray locked (Clear or start building to edit).</li>
             <li><strong>Clear</strong> — wipe the stage and start fresh.</li>
           </ul>
         </section>
@@ -207,9 +212,10 @@
           <h3>Try this</h3>
           <ul class="about-list">
             <li>Build <strong>water</strong>: O, then H, then H — watch the bent shape.</li>
-            <li>Open <strong>Library → Body &amp; medicine</strong> and assemble caffeine or adrenaline.</li>
-            <li>Open <strong>Library → Everyday &amp; kitchen</strong> and play <strong>Structured water</strong> — a hydrogen-bonded hexagon labeled (H₂O)₆, not H₃O₂.</li>
-            <li>Spin the art pieces: <strong>cubane</strong>, <strong>C₆₀</strong>, <strong>porphyrin</strong>, <strong>cholesterol</strong>, or a <strong>10-base-pair DNA helix</strong> snippet.</li>
+            <li>Open <strong>Library → Everyday &amp; kitchen</strong> and assemble caffeine, sucrose, or citric acid.</li>
+            <li>Open <strong>Library → Body &amp; medicine</strong> and assemble adrenaline or the DNA helix.</li>
+            <li>In Everyday, play <strong>Structured water</strong> — a hydrogen-bonded hexagon labeled (H₂O)₆, not H₃O₂.</li>
+            <li>Spin the art pieces: <strong>cubane</strong>, <strong>C₆₀</strong>, <strong>porphyrin</strong>, <strong>cholesterol</strong>, or an <strong>11-base-pair DNA helix</strong> snippet.</li>
             <li>Free-build nonsense like HB₁₁ — the app allows it; chemistry may not. That’s the lesson.</li>
           </ul>
         </section>
@@ -219,7 +225,7 @@
     <div class="tray" id="tray" aria-live="polite"></div>
   </div>
 
-  <script type="module" src="app.js?v=site78"></script>
+  <script type="module" src="app.js?v=site93"></script>
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
