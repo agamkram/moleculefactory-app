@@ -325,7 +325,8 @@ function buildCenter(center, ligands) {
 
 // --- elements data integrity ---
 {
-  assert(ELEMENT_LIST.length === 118, "118 elements");
+  assert(ELEMENT_LIST.length === 119, "118 real + Unobtainium");
+  assert(ELEMENTS.Uo?.z === 119 && ELEMENTS.Uo?.name === "Unobtainium", "Uo mythical");
   for (const s of ELEMENT_LIST) {
     assert(ELEMENTS[s] && typeof ELEMENTS[s].valence === "number", `${s} valence`);
   }

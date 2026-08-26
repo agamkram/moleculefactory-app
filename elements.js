@@ -1,4 +1,4 @@
-/** All 118 elements — group-band colors for dark UI, display grid, builder valence. */
+/** Real 118 + mythical Unobtainium — group-band colors for dark UI, display grid, builder. */
 export const ELEMENTS = {
   H: { z: 1, name: "Hydrogen", state: "gas", color: "#e8eef7", radius: 0.31, valence: 1, period: 1, group: 1, row: 1, col: 1 },
   He: { z: 2, name: "Helium", state: "gas", color: "#67e8f9", radius: 0.28, valence: 0, period: 1, group: 18, row: 1, col: 18 },
@@ -118,6 +118,8 @@ export const ELEMENTS = {
   Lv: { z: 116, name: "Livermorium", state: "unknown", color: "#d66a7a", radius: 1.5, valence: 2, period: 7, group: 16, row: 7, col: 16 },
   Ts: { z: 117, name: "Tennessine", state: "unknown", color: "#3bb789", radius: 1.5, valence: 1, period: 7, group: 17, row: 7, col: 17 },
   Og: { z: 118, name: "Oganesson", state: "unknown", color: "#62c7d4", radius: 1.5, valence: 0, period: 7, group: 18, row: 7, col: 18 },
+  // Mythical jest — past the real table (not IUPAC).
+  Uo: { z: 119, name: "Unobtainium", state: "solid", color: "#f0c14a", radius: 1.55, valence: 1, period: 8, group: 1, row: 8, col: 1 },
 };
 
 export const ELEMENT_LIST = Object.keys(ELEMENTS);

@@ -28,6 +28,7 @@ export const COVALENT_ELEMENTS = new Set([
   "Cl",
   "Br",
   "I",
+  "Uo", // mythical — free-build jest
 ]);
 
 /** Simple salt cations allowed in free build (binary only). */

@@ -122,6 +122,16 @@ export const RECIPES = [
     bonds: [[0, 1, 1], [0, 2, 1], [3, 4, 1], [3, 5, 1], [6, 7, 1], [6, 8, 1], [9, 10, 1], [9, 11, 1], [12, 13, 1], [12, 14, 1], [15, 16, 1], [15, 17, 1], [1, 3, 1], [4, 6, 1], [7, 9, 1], [10, 12, 1], [13, 15, 1], [16, 0, 1]],
   },
   {
+    id: "unobtainium",
+    formula: "Uo",
+    name: "Unobtainium",
+    hint: "mythical · not yet observed",
+    category: "everyday",
+    kind: "radical",
+    atoms: [{ el: "Uo", x: 0, y: 0, z: 0 }],
+    bonds: [],
+  },
+  {
     id: "co2",
     formula: "CO₂",
     name: "Carbon dioxide",

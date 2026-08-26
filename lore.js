@@ -29,6 +29,11 @@ export const LORE = {
     place: "Wellness aisle",
     hook: "Six waters in a hydrogen-bonded hexagon — formula (H₂O)₆, not the H₃O₂ on the bottle.",
   },
+  "unobtainium": {
+    discovered: "never",
+    place: "Sci-fi prop dept.",
+    hook: "Z = 119 on this table only — the metal everyone needs and nobody has a sample of.",
+  },
   "co2": {
     discovered: "1754",
     place: "Scotland",
