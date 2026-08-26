@@ -58,6 +58,10 @@ html.pwa-standalone body {
   bottom: auto;
   overflow: hidden;
   background: var(--bg);
+  /* Block long-press copy of chrome (title, Library/Clear/About, rail tiles). */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 #stage {
@@ -159,6 +163,16 @@ html.pwa-standalone body {
   text-align: center;
   pointer-events: none;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.65);
+}
+
+.hud-formula,
+.hud-name {
+  /* Hit-target for long-press copy; stage still receives drags around them. */
+  pointer-events: auto;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+  -webkit-touch-callout: default;
 }
 
 .hud-formula {
@@ -397,6 +411,9 @@ html.pwa-standalone body {
   padding: 0.65rem 2.1rem 0.65rem 0.75rem;
   font: inherit;
   font-size: 0.88rem;
+  user-select: text;
+  -webkit-user-select: text;
+  -webkit-touch-callout: default;
 }
 
 /* Hide native clear so our button is the one way back to the full list */
@@ -679,6 +696,9 @@ body.rail-open {
   border-radius: 0.55rem;
   padding: 0.45rem 0.65rem;
   cursor: pointer;
+  user-select: text;
+  -webkit-user-select: text;
+  -webkit-touch-callout: default;
 }
 
 .recipe strong {
