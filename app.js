@@ -49,9 +49,11 @@ const RECIPE_CAT_SHORT = {
   inorganic: "Inorganics",
   acids_bases: "Acids",
   salts: "Salts",
-  hydrocarbons: "Hydrocarbons",
+  hydrocarbons: "Hydro",
   organics: "Organics",
   body_medicine: "Body",
+  amino_acids: "Amino",
+  sugars: "Sugars",
   everyday: "Everyday",
 };
 const graph = createGraph();

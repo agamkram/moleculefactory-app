@@ -942,7 +942,132 @@ export const LORE = {
   "sucrose_simple": {
     discovered: "antiquity / 1747",
     place: "India / Germany",
-    hook: "Table sugar: cane had a head start; beets made it a northern crop.",
+    hook: "Table sugar: glucose's six-ring locked to fructose's five-ring. Cane had a head start; beets made it a northern crop.",
+  },
+  "glyceraldehyde": {
+    discovered: "1860s",
+    place: "Germany",
+    hook: "The smallest aldose — three carbons, and the starting rung of the sugar ladder.",
+  },
+  "deoxyribose": {
+    discovered: "1929",
+    place: "USA",
+    hook: "Ribose minus one oxygen. That missing OH is why DNA's backbone isn't RNA's.",
+  },
+  "arabinose": {
+    discovered: "1869",
+    place: "Germany",
+    hook: "Named from gum arabic — a pentose plants pack into gums and hemicellulose.",
+  },
+  "xylose": {
+    discovered: "1881",
+    place: "Germany",
+    hook: "Wood sugar. The pentose hiding in hardwood, and the cousin of sugar-free xylitol.",
+  },
+  "mannose": {
+    discovered: "1888",
+    place: "Germany",
+    hook: "Glucose with one OH flipped. Cells use it to tag proteins on their way out.",
+  },
+  "galactose": {
+    discovered: "1856",
+    place: "France",
+    hook: "The other half of milk sugar — same atoms as glucose, one carbon's OH reversed.",
+  },
+  "lactose": {
+    discovered: "1619 / 1780",
+    place: "Italy / France",
+    hook: "Milk sugar: galactose locked to glucose. Most adult mammals stop digesting it.",
+  },
+  "maltose": {
+    discovered: "1847",
+    place: "France",
+    hook: "Two glucoses from broken starch — the sugar malt and beer are named for.",
+  },
+  "dihydroxyacetone": {
+    discovered: "1890s",
+    place: "Germany",
+    hook: "Glyceraldehyde's ketose twin — three carbons with the double-bonded oxygen in the middle.",
+  },
+  "allose": {
+    discovered: "1910s",
+    place: "USA / Europe",
+    hook: "The rarest common-name aldohexose — same atoms as glucose, every OH flipped the other way.",
+  },
+  "altrose": {
+    discovered: "1910s",
+    place: "USA / Europe",
+    hook: "A rare glucose sibling. Nature barely uses it; textbooks keep it to complete the set.",
+  },
+  "gulose": {
+    discovered: "1890s",
+    place: "Germany",
+    hook: "Another rare aldohexose — the letter between glucose and idose in the sugar alphabet.",
+  },
+  "idose": {
+    discovered: "1890s",
+    place: "Germany",
+    hook: "Glucose's mirror-ish cousin. Almost unused in cells, essential in the hexose roster.",
+  },
+  "talose": {
+    discovered: "1890s",
+    place: "Germany",
+    hook: "The last of the eight D-aldohexoses — galactose with one more OH flipped.",
+  },
+  "psicose": {
+    discovered: "1940s",
+    place: "USA / Japan",
+    hook: "A rare fructose twin, now sold as a low-calorie sugar. Same formula, ketone shifted in flavor.",
+  },
+  "sorbose": {
+    discovered: "1852",
+    place: "France",
+    hook: "The sugar that became vitamin C's industrial starting point — berries to ascorbic acid.",
+  },
+  "tagatose": {
+    discovered: "1890s",
+    place: "Germany",
+    hook: "A fructose isomer from dairy. Sweet, barely absorbed — a rare sugar that made it to the shelf.",
+  },
+  "glucosamine": {
+    discovered: "1876",
+    place: "Germany",
+    hook: "Glucose wearing an amine. Cartilage's building block, and the 'joint sugar' on supplement bottles.",
+  },
+  "xylitol": {
+    discovered: "1891",
+    place: "Germany / Finland",
+    hook: "Wood sugar with hydrogens instead of an aldehyde — the sweetener that bacteria in plaque can't eat.",
+  },
+  "sorbitol": {
+    discovered: "1872",
+    place: "France",
+    hook: "Glucose with its aldehyde reduced to an alcohol. The syrupy sweetener in sugar-free gum and pears.",
+  },
+  "trehalose": {
+    discovered: "1832",
+    place: "UK / France",
+    hook: "Two glucoses joined head-to-head. Insect blood sugar, and the trick mushrooms use to survive drying.",
+  },
+  "cellobiose": {
+    discovered: "1870s",
+    place: "Germany",
+    hook: "Maltose's cellulose twin — two glucoses linked the way wood is, not the way starch is.",
+  },
+  "raffinose": {
+    discovered: "1876",
+    place: "Australia / Europe",
+    hook: "The bean trisaccharide: galactose on sucrose. Humans can't break it — gut microbes can.",
+  },
+  "amylose_snippet": {
+    discovered: "antiquity / 1811",
+    place: "worldwide / France",
+    hook: "Six glucoses in the amylose way (α-1,4) — a snippet of the unbranched coil inside starch. Not the whole granule.",
+  },
+  "cellulose_snippet": {
+    discovered: "1838",
+    place: "France",
+    hook: "Six glucoses in the wood way (β-1,4) — a straight ribbon snippet of the chain that makes plants stand up.",
   },
   "vanillin": {
     discovered: "1858",
@@ -1103,6 +1228,91 @@ export const LORE = {
     discovered: "1953 structure",
     place: "UK",
     hook: "One full twist here — the human genome is about 3.1 billion base pairs. Two strands, paired letters, spiral stairs.",
+  },
+  "cysteine": {
+    discovered: "1810 / 1884",
+    place: "England / Germany",
+    hook: "The sulfur amino acid — two of these can snap together and pin a protein's fold in place.",
+  },
+  "threonine": {
+    discovered: "1935",
+    place: "USA",
+    hook: "Last of the twenty to be found. An extra methyl on serine's alcohol side chain.",
+  },
+  "valine": {
+    discovered: "1901",
+    place: "Germany",
+    hook: "A branched, water-shy letter — common in protein cores, essential in the diet.",
+  },
+  "leucine": {
+    discovered: "1819",
+    place: "France",
+    hook: "Named from the Greek for white. Muscle cells treat it as a build signal.",
+  },
+  "isoleucine": {
+    discovered: "1904",
+    place: "Germany",
+    hook: "Leucine's isomer — same atoms, branch moved one carbon closer to the backbone.",
+  },
+  "methionine": {
+    discovered: "1922",
+    place: "USA",
+    hook: "The start codon letter. Almost every new protein begins with methionine.",
+  },
+  "proline": {
+    discovered: "1901",
+    place: "Germany",
+    hook: "The bent letter — its side chain loops back onto the nitrogen and kinks the chain.",
+  },
+  "aspartic_acid": {
+    discovered: "1827",
+    place: "France",
+    hook: "A short acidic side chain. Asparagine is this molecule with the acid turned into an amide.",
+  },
+  "asparagine": {
+    discovered: "1806",
+    place: "France",
+    hook: "First amino acid isolated — from asparagus juice — and the one that named the whole family.",
+  },
+  "glutamic_acid": {
+    discovered: "1866",
+    place: "Germany",
+    hook: "The long acidic letter. Its salt, glutamate, is the savory taste in broth and tomatoes.",
+  },
+  "glutamine": {
+    discovered: "1883",
+    place: "Austria",
+    hook: "The body's nitrogen shuttle — abundant in blood, and the amide cousin of glutamic acid.",
+  },
+  "lysine": {
+    discovered: "1889",
+    place: "Germany",
+    hook: "A long basic arm that proteins use to grab DNA, and that your diet has to supply.",
+  },
+  "arginine": {
+    discovered: "1886",
+    place: "Germany / Sweden",
+    hook: "The most basic letter — a guanidino fork that clings to phosphates and helps make nitric oxide.",
+  },
+  "histidine": {
+    discovered: "1896",
+    place: "Germany",
+    hook: "An imidazole ring that can catch or release a proton — the switch in many enzyme active sites.",
+  },
+  "phenylalanine": {
+    discovered: "1879",
+    place: "Germany",
+    hook: "A benzene hanging off the backbone. The body can turn it into tyrosine — unless it cannot.",
+  },
+  "tyrosine": {
+    discovered: "1846",
+    place: "Germany",
+    hook: "Named from cheese. Phenol on the side chain; precursor to dopamine, adrenaline, and thyroid hormone.",
+  },
+  "tryptophan": {
+    discovered: "1901",
+    place: "England",
+    hook: "The biggest standard letter — an indole ring, scarce in the diet, and the start of serotonin.",
   },
 
 };

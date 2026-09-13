@@ -3,7 +3,7 @@
 Build molecules in 3D from the periodic table. Open the library to watch curated structures assemble, or free-build atom by atom with live naming and valence.
 
 - **Element rail** — all 118 real elements (+ mythical Unobtainium), tap to place
-- **Library** — 200+ teaching molecules with discovery stories
+- **Library** — 200+ teaching molecules with discovery stories, including all 20 amino acids and a full sugars set
 - **Free-build** — valence sites, undo, formula + name as you go
 - **3D stage** — free spin, pinch zoom
 

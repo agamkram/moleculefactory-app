@@ -17,12 +17,14 @@ import {
 } from "./build.js";
 import {
   RECIPES,
+  RECIPE_CATEGORIES,
   ELEMENTS,
   ELEMENT_LIST,
   formulaFromCounts,
   recipeFingerprint,
   matchRecipeByCounts,
 } from "./data.js";
+import { loreFor } from "./lore.js";
 
 let failed = 0;
 function assert(cond, msg) {
@@ -347,6 +349,149 @@ function buildCenter(center, ligands) {
     }
   }
   assert(covalent > 100, `many covalent recipes (${covalent})`);
+}
+
+// --- amino acids: twenty protein letters in their own category ---
+{
+  const AA_IDS = [
+    "glycine",
+    "alanine",
+    "serine",
+    "cysteine",
+    "threonine",
+    "valine",
+    "leucine",
+    "isoleucine",
+    "methionine",
+    "proline",
+    "aspartic_acid",
+    "asparagine",
+    "glutamic_acid",
+    "glutamine",
+    "lysine",
+    "arginine",
+    "histidine",
+    "phenylalanine",
+    "tyrosine",
+    "tryptophan",
+  ];
+  assert(
+    RECIPE_CATEGORIES.some((c) => c.id === "amino_acids"),
+    "amino_acids category exists"
+  );
+  const inCat = RECIPES.filter((r) => r.category === "amino_acids");
+  assert(inCat.length === 20, `20 amino acids in category (got ${inCat.length})`);
+  for (const id of AA_IDS) {
+    const r = RECIPES.find((x) => x.id === id);
+    assert(!!r, `${id} recipe exists`);
+    assert(r?.category === "amino_acids", `${id} is in amino_acids`);
+    assert(r?.kind === "covalent", `${id} covalent`);
+    assert(!!loreFor(r), `${id} has lore`);
+  }
+  for (const id of ["glycine", "alanine", "serine"]) {
+    assert(
+      !RECIPES.some((r) => r.id === id && r.category === "body_medicine"),
+      `${id} pulled out of body_medicine`
+    );
+  }
+  const leu = RECIPES.find((r) => r.id === "leucine");
+  const ile = RECIPES.find((r) => r.id === "isoleucine");
+  assert(leu && ile, "leucine and isoleucine exist");
+  assert(leu.formula === ile.formula, "Leu and Ile share a Hill formula");
+}
+
+// --- sugars: teaching set in their own category ---
+{
+  const SUGAR_IDS = [
+    "glyceraldehyde",
+    "dihydroxyacetone",
+    "deoxyribose",
+    "ribose",
+    "arabinose",
+    "xylose",
+    "glucose",
+    "mannose",
+    "galactose",
+    "allose",
+    "altrose",
+    "gulose",
+    "idose",
+    "talose",
+    "fructose",
+    "psicose",
+    "sorbose",
+    "tagatose",
+    "glucosamine",
+    "xylitol",
+    "sorbitol",
+    "sucrose_simple",
+    "lactose",
+    "maltose",
+    "trehalose",
+    "cellobiose",
+    "raffinose",
+    "amylose_snippet",
+    "cellulose_snippet",
+  ];
+  assert(
+    RECIPE_CATEGORIES.some((c) => c.id === "sugars"),
+    "sugars category exists"
+  );
+  const inCat = RECIPES.filter((r) => r.category === "sugars");
+  assert(inCat.length === 29, `29 sugars in category (got ${inCat.length})`);
+  for (const id of SUGAR_IDS) {
+    const r = RECIPES.find((x) => x.id === id);
+    assert(!!r, `${id} recipe exists`);
+    assert(r?.category === "sugars", `${id} is in sugars`);
+    assert(r?.kind === "covalent", `${id} covalent`);
+    assert(!!loreFor(r), `${id} has lore`);
+  }
+  for (const id of ["glucose", "fructose", "ribose"]) {
+    assert(
+      !RECIPES.some((r) => r.id === id && r.category === "body_medicine"),
+      `${id} pulled out of body_medicine`
+    );
+  }
+  assert(
+    !RECIPES.some((r) => r.id === "sucrose_simple" && r.category === "everyday"),
+    "sucrose pulled out of everyday"
+  );
+  {
+    const suc = RECIPES.find((r) => r.id === "sucrose_simple");
+    const c = {};
+    for (const a of suc.atoms) c[a.el] = (c[a.el] || 0) + 1;
+    assert(c.C === 12 && c.H === 22 && c.O === 11, "sucrose atom counts match C12H22O11");
+    assert(/five-ring|Fru|fructose/i.test(suc.hint + (loreFor(suc)?.hook || "")), "sucrose is Glc–Fru");
+  }
+  const amylose = RECIPES.find((r) => r.id === "amylose_snippet");
+  const cellulose = RECIPES.find((r) => r.id === "cellulose_snippet");
+  assert(amylose?.name === "Amylose snippet", "starch renamed Amylose snippet");
+  assert(cellulose?.name === "Cellulose snippet", "cellulose renamed Cellulose snippet");
+  function glycosidicCO(recipe) {
+    const lens = [];
+    for (let i = 0; i < recipe.atoms.length; i++) {
+      if (recipe.atoms[i].el !== "O") continue;
+      const ns = recipe.bonds
+        .filter(([a, b]) => a === i || b === i)
+        .map(([a, b]) => (a === i ? b : a));
+      if (ns.length !== 2) continue;
+      if (ns.some((j) => recipe.atoms[j].el !== "C")) continue;
+      const p = recipe.atoms[i];
+      const c1 = recipe.atoms[ns[0]];
+      const c2 = recipe.atoms[ns[1]];
+      const du = Math.hypot(c1.x - p.x, c1.y - p.y, c1.z - p.z);
+      const dv = Math.hypot(c2.x - p.x, c2.y - p.y, c2.z - p.z);
+      lens.push(du, dv);
+    }
+    return lens;
+  }
+  for (const r of [amylose, cellulose, RECIPES.find((x) => x.id === "maltose")]) {
+    const lens = glycosidicCO(r);
+    assert(
+      lens.length && lens.every((d) => d > 1.2 && d < 1.6),
+      `${r.id} C–O–C bonds textbook length (got ${lens.map((d) => d.toFixed(2)).join(",")})`
+    );
+  }
 }
 
 // --- DNA 11 bp: each base pair populated (phosphate+sugar+base, R↔Y, H-bond) ---
