@@ -1198,6 +1198,22 @@ function buildRecipeCatChips() {
   syncRecipeCatChips();
 }
 
+function appendCategoryHead(cat) {
+  const head = document.createElement("li");
+  head.className = "recipe-cat";
+  const label = document.createElement("div");
+  label.className = "recipe-cat-label";
+  label.textContent = cat.label;
+  head.appendChild(label);
+  if (cat.intro) {
+    const intro = document.createElement("p");
+    intro.className = "recipe-intro";
+    intro.textContent = cat.intro;
+    head.appendChild(intro);
+  }
+  recipeList.appendChild(head);
+}
+
 function buildRecipes(filterText = "") {
   const q = (filterText || "").trim().toLowerCase();
   recipeList.innerHTML = "";
@@ -1217,12 +1233,7 @@ function buildRecipes(filterText = "") {
   } else if (libraryCategory) {
     const cat = RECIPE_CATEGORIES.find((c) => c.id === libraryCategory);
     const items = scope;
-    if (cat && items.length) {
-      const head = document.createElement("li");
-      head.className = "recipe-cat";
-      head.textContent = cat.label;
-      recipeList.appendChild(head);
-    }
+    if (cat && items.length) appendCategoryHead(cat);
     for (const r of items) {
       appendRecipeRow(r);
       shown += 1;
@@ -1231,10 +1242,7 @@ function buildRecipes(filterText = "") {
     for (const cat of RECIPE_CATEGORIES) {
       const items = RECIPES.filter((r) => r.category === cat.id);
       if (!items.length) continue;
-      const head = document.createElement("li");
-      head.className = "recipe-cat";
-      head.textContent = cat.label;
-      recipeList.appendChild(head);
+      appendCategoryHead(cat);
       for (const r of items) {
         appendRecipeRow(r);
         shown += 1;

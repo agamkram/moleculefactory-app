@@ -1219,10 +1219,150 @@ export const LORE = {
     place: "Europe",
     hook: "The flat ring at the heart of heme and chlorophyll — life’s favorite colorful scaffold.",
   },
+  "folic_acid": {
+    discovered: "1941",
+    place: "USA",
+    hook: "The synthetic form of vitamin B9, added to supplements and fortified flour.",
+  },
+  "folate": {
+    discovered: "1960s",
+    place: "USA",
+    hook: "5-Methyltetrahydrofolate, the form of vitamin B9 that circulates in blood and that cells use.",
+  },
   "cholesterol": {
     discovered: "1815 era",
     place: "France / Europe",
-    hook: "The steroid your membranes need — same family as hormones, famous in blood tests.",
+    hook: "The sterol in cell membranes. The body also makes bile acids, vitamin D, and steroid hormones from it.",
+  },
+  "cholesteryl_oleate": {
+    discovered: "19th c.",
+    place: "Europe",
+    hook: "Cholesterol with an oleic acid clipped on. This is most of what an LDL particle is full of.",
+  },
+  "squalene": {
+    discovered: "1916",
+    place: "Japan",
+    hook: "A long chain of thirty carbons. The body folds it up and the first sterol falls out.",
+  },
+  "lanosterol": {
+    discovered: "1930s",
+    place: "Europe",
+    hook: "The first sterol. Three extra methyls still hanging on, on the way to cholesterol.",
+  },
+  "dehydrocholesterol_7": {
+    discovered: "1935 era",
+    place: "Germany",
+    hook: "One step from cholesterol. Sunlight on this molecule in skin is how vitamin D3 begins.",
+  },
+  "lathosterol": {
+    discovered: "20th c.",
+    place: "Europe",
+    hook: "A cholesterol precursor. High on a blood panel means the body is making a lot of cholesterol.",
+  },
+  "zymosterol": {
+    discovered: "20th c.",
+    place: "Europe",
+    hook: "A stop on the Bloch path, between lanosterol and desmosterol.",
+  },
+  "desmosterol": {
+    discovered: "20th c.",
+    place: "Europe",
+    hook: "The last stop before cholesterol on the Bloch path. Another marker that synthesis is running high.",
+  },
+  "campesterol": {
+    discovered: "plant sterol",
+    place: "plants",
+    hook: "A plant sterol the body cannot make. High in blood means cholesterol is being absorbed well.",
+  },
+  "sitosterol": {
+    discovered: "plant sterol",
+    place: "plants",
+    hook: "The main plant sterol. Same four rings as cholesterol, with an ethyl on the tail.",
+  },
+  "stigmasterol": {
+    discovered: "plant sterol",
+    place: "plants",
+    hook: "Sitosterol with an extra double bond in the tail. Soy and other plants are full of it.",
+  },
+  "cholestanol": {
+    discovered: "20th c.",
+    place: "Europe",
+    hook: "Cholesterol with the ring double bond filled in. A marker of how much sterol the gut absorbs.",
+  },
+  "campestanol": {
+    discovered: "plant stanol",
+    place: "plants",
+    hook: "Campesterol, saturated. The gut lets almost none of it through.",
+  },
+  "sitostanol": {
+    discovered: "plant stanol",
+    place: "plants",
+    hook: "Saturated sitosterol. The stanol in Benecol, barely absorbed.",
+  },
+  "hydroxycholesterol_27": {
+    discovered: "20th c.",
+    place: "Europe / USA",
+    hook: "The 27-hydroxy. The liver's side door that turns cholesterol toward bile acids.",
+  },
+  "hydroxycholesterol_24s": {
+    discovered: "20th c.",
+    place: "Europe",
+    hook: "Made in the brain. This is how cholesterol gets out of a tissue that cannot burn it.",
+  },
+  "hydroxycholesterol_25": {
+    discovered: "20th c.",
+    place: "USA",
+    hook: "An oxysterol immune cells use as a signal, and a brake on making more cholesterol.",
+  },
+  "hydroxycholesterol_7a": {
+    discovered: "20th c.",
+    place: "Europe",
+    hook: "The committed first step of the classic route from cholesterol to bile acids.",
+  },
+  "hydroxycholesterol_7b": {
+    discovered: "20th c.",
+    place: "Europe",
+    hook: "Cholesterol nicked by oxygen at carbon 7. A sign of oxidation, not a planned enzyme step.",
+  },
+  "ketocholesterol_7": {
+    discovered: "20th c.",
+    place: "Europe",
+    hook: "Oxidized cholesterol with a ketone at carbon 7. It shows up beside the hydroxy sterols on lab panels.",
+  },
+  "hydroxycholesterol_4b": {
+    discovered: "20th c.",
+    place: "Europe",
+    hook: "A quiet marker of the liver enzyme that also clears many drugs.",
+  },
+  "hydroxycholesterol_22r": {
+    discovered: "20th c.",
+    place: "USA",
+    hook: "The first cut on the way from cholesterol to the steroid hormones.",
+  },
+  "cholic_acid": {
+    discovered: "1848",
+    place: "Germany",
+    hook: "A primary bile acid. Cholesterol chopped down to twenty-four carbons so it can leave in bile.",
+  },
+  "chenodeoxycholic_acid": {
+    discovered: "1920s",
+    place: "Germany",
+    hook: "The other primary bile acid the liver makes from cholesterol.",
+  },
+  "deoxycholic_acid": {
+    discovered: "1880s",
+    place: "Germany",
+    hook: "Gut bacteria make this from cholic acid, and the body reuses it.",
+  },
+  "lithocholic_acid": {
+    discovered: "1911",
+    place: "Germany",
+    hook: "The gut's leftover of chenodeoxycholic acid. The smallest of the common bile acids.",
+  },
+  "ursodeoxycholic_acid": {
+    discovered: "1927",
+    place: "Japan",
+    hook: "The 7β cousin of chenodeoxycholic acid. First found in bear bile, now a gallstone drug.",
   },
   "dna_11bp": {
     discovered: "1953 structure",

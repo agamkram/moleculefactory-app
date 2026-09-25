@@ -666,16 +666,29 @@ body.rail-open {
 
 .recipe-cat {
   margin: 0.4rem 0 0.05rem;
-  padding: 0.2rem 0.4rem;
+  padding: 0.35rem 0.5rem 0.45rem;
+  background: rgba(255, 180, 92, 0.1);
+  border-left: 3px solid #ffb45c;
+  border-radius: 0.25rem;
+}
+
+.recipe-cat-label {
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   /* Warm amber — distinct from cyan meta / muted card text while scrolling */
   color: #ffb45c;
-  background: rgba(255, 180, 92, 0.1);
-  border-left: 3px solid #ffb45c;
-  border-radius: 0.25rem;
+}
+
+.recipe-intro {
+  margin: 0.35rem 0 0;
+  font-size: 0.84rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.4;
+  color: var(--text);
 }
 
 .recipe-cat:first-child {

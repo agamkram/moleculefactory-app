@@ -24,7 +24,8 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 
 
 class Handler(SimpleHTTPRequestHandler):
-    protocol_version = "HTTP/1.1"
+    # HTTP/1.0: 1.1 keep-alive leaks a thread per idle connection until the server accepts and answers nothing.
+    protocol_version = "HTTP/1.0"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
