@@ -42,7 +42,7 @@ export const RECIPE_CATEGORIES = [
   },
   {
     "id": "sterols",
-    "label": "Sterols",
+    "label": "Cholesterol",
     "intro": "Cholesterol is one molecule. Cell membranes need it, and the body makes bile acids, vitamin D, and steroid hormones from it. In blood, cholesterol is inside lipoprotein particles. Labs group those particles by density: VLDL, IDL, LDL, and HDL. Each group also contains particles of different sizes: large, medium, and small. A total-cholesterol number adds up the cholesterol in all of those particles. It does not count the particles, and it does not report their size. Coronary artery disease is associated with the number of apoB particles. VLDL, IDL, and LDL each contain one apoB. Those particles can pass into the artery wall and stay there. HDL particles pick up cholesterol from tissues and return it to the liver. Two people can have the same total cholesterol and different particle numbers and sizes."
   },
   {
